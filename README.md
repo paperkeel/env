@@ -1,6 +1,14 @@
 # @bearfire-dev/env
 
-Use T3 Env and Zod 4 with Bearfire defaults. The package has no bundled runtime dependencies.
+This internal Bearfire package adds Bearfire defaults to [T3 Env](https://github.com/t3-oss/t3-env) and [Zod 4](https://zod.dev/).
+
+It works with our [Infisical infrastructure-as-code system](https://github.com/bearfire-dev/infisical-iac). That system manages secret contracts and syncs secrets to application environments. This package validates those values at runtime and rejects Infisical placeholder values.
+
+This package is not intended or supported for external use.
+
+## Attribution
+
+This package builds on [`@t3-oss/env-core`](https://github.com/t3-oss/t3-env) and [`zod`](https://github.com/colinhacks/zod). We thank their maintainers and contributors. Both packages remain peer dependencies and are not bundled.
 
 ## Install
 
