@@ -13,6 +13,21 @@ export * from "./guard.js";
 
 const secretSchemas = new WeakSet<object>();
 
+function containsSecretSchema(value: unknown, seen = new WeakSet<object>()): boolean {
+	if (!value || typeof value !== "object") return false;
+	if (secretSchemas.has(value)) return true;
+	if (seen.has(value)) return false;
+	seen.add(value);
+
+	if (Array.isArray(value)) {
+		return value.some((entry) => containsSecretSchema(entry, seen));
+	}
+
+	const zodDefinition = (value as { _zod?: { def?: unknown } })._zod?.def;
+	if (zodDefinition) return containsSecretSchema(zodDefinition, seen);
+	return Object.values(value).some((entry) => containsSecretSchema(entry, seen));
+}
+
 export function secret(keyName = "secret") {
 	const schema = z
 		.string()
@@ -49,7 +64,7 @@ function createBearfireEnvInternal(options: EnvOptions): unknown {
 	const client = options.client;
 	if (client && typeof client === "object") {
 		for (const [name, schema] of Object.entries(client)) {
-			if (schema && typeof schema === "object" && secretSchemas.has(schema)) {
+			if (containsSecretSchema(schema)) {
 				throw new Error(`Client variable ${name} cannot use secret().`);
 			}
 		}

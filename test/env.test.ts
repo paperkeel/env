@@ -45,4 +45,14 @@ describe("Bearfire environment validation", () => {
 			})
 		).toThrow("Client variable PUBLIC_API_KEY cannot use secret().");
 	});
+
+	it("rejects wrapped secret schemas in client variables", () => {
+		expect(() =>
+			createBearfireEnv({
+				clientPrefix: "PUBLIC_",
+				client: { PUBLIC_API_KEY: secret("PUBLIC_API_KEY").optional() },
+				runtimeEnv: {},
+			})
+		).toThrow("Client variable PUBLIC_API_KEY cannot use secret().");
+	});
 });
