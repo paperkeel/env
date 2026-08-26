@@ -3,6 +3,12 @@ name: publish
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published package version to verify
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -24,6 +30,22 @@ jobs:
           scope: "@bearfire-dev"
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
-      - run: pnpm publish --no-git-checks
+      - if: github.event_name == 'release'
+        run: pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify published package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PACKAGE_VERSION: ${{ inputs.version || github.event.release.tag_name }}
+        working-directory: ${{ runner.temp }}
+        run: |
+          mkdir package-consumer
+          cd package-consumer
+          pnpm init
+          pnpm add --lockfile-only "@bearfire-dev/env@${PACKAGE_VERSION#v}"
+      - name: Upload consumer lockfile
+        uses: actions/upload-artifact@v6
+        with:
+          name: consumer-lockfile
+          path: ${{ runner.temp }}/package-consumer/pnpm-lock.yaml
