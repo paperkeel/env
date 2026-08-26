@@ -1,4 +1,5 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
+import { z } from "zod";
 import { createBearfireEnv, createRequestEnv, secret } from "../src/index.js";
 
 describe("Bearfire environment validation", () => {
@@ -54,5 +55,25 @@ describe("Bearfire environment validation", () => {
 				runtimeEnv: {},
 			})
 		).toThrow("Client variable PUBLIC_API_KEY cannot use secret().");
+	});
+
+	it("rejects lazy secret schemas in client variables", () => {
+		expect(() =>
+			createBearfireEnv({
+				clientPrefix: "PUBLIC_",
+				client: { PUBLIC_API_KEY: z.lazy(() => secret("PUBLIC_API_KEY")) },
+				runtimeEnv: { PUBLIC_API_KEY: "client-value" },
+			})
+		).toThrow("Client variable PUBLIC_API_KEY cannot use secret().");
+	});
+
+	it("rejects secret schemas in shared variables", () => {
+		expect(() =>
+			createBearfireEnv({
+				clientPrefix: "PUBLIC_",
+				shared: { PUBLIC_API_KEY: secret("PUBLIC_API_KEY") },
+				runtimeEnv: { PUBLIC_API_KEY: "client-value" },
+			})
+		).toThrow("Shared variable PUBLIC_API_KEY cannot use secret().");
 	});
 });

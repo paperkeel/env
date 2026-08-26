@@ -24,7 +24,13 @@ function containsSecretSchema(value: unknown, seen = new WeakSet<object>()): boo
 	}
 
 	const zodDefinition = (value as { _zod?: { def?: unknown } })._zod?.def;
-	if (zodDefinition) return containsSecretSchema(zodDefinition, seen);
+	if (zodDefinition && typeof zodDefinition === "object") {
+		const lazyDefinition = zodDefinition as { type?: unknown; getter?: unknown };
+		if (lazyDefinition.type === "lazy" && typeof lazyDefinition.getter === "function") {
+			return containsSecretSchema(lazyDefinition.getter(), seen);
+		}
+		return containsSecretSchema(zodDefinition, seen);
+	}
 	return Object.values(value).some((entry) => containsSecretSchema(entry, seen));
 }
 
@@ -61,11 +67,15 @@ type EnvOptions = {
 const callCreateEnv = createEnv as unknown as (options: EnvOptions) => unknown;
 
 function createBearfireEnvInternal(options: EnvOptions): unknown {
-	const client = options.client;
-	if (client && typeof client === "object") {
-		for (const [name, schema] of Object.entries(client)) {
-			if (containsSecretSchema(schema)) {
-				throw new Error(`Client variable ${name} cannot use secret().`);
+	for (const [namespace, schemas] of [
+		["Client", options.client],
+		["Shared", options.shared],
+	] as const) {
+		if (schemas && typeof schemas === "object") {
+			for (const [name, schema] of Object.entries(schemas)) {
+				if (containsSecretSchema(schema)) {
+					throw new Error(`${namespace} variable ${name} cannot use secret().`);
+				}
 			}
 		}
 	}
