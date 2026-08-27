@@ -1,24 +1,16 @@
 # @bearfire-dev/env
 
-This internal Bearfire package adds Bearfire defaults to [T3 Env](https://github.com/t3-oss/t3-env) and [Zod 4](https://zod.dev/).
+This Bearfire package adds Bearfire defaults to [T3 Env](https://github.com/t3-oss/t3-env) and [Zod 4](https://zod.dev/).
 
 It works with our [Infisical infrastructure-as-code system](https://github.com/bearfire-dev/infisical-iac). That system manages secret contracts and syncs secrets to application environments. This package validates those values at runtime and rejects Infisical placeholder values.
 
-This package is not intended or supported for external use.
+The package is publicly installable to avoid registry authentication. It is designed for Bearfire projects and has no external support commitment.
 
 ## Attribution
 
 This package builds on [`@t3-oss/env-core`](https://github.com/t3-oss/t3-env) and [`zod`](https://github.com/colinhacks/zod). We thank their maintainers and contributors. Both packages remain peer dependencies and are not bundled.
 
 ## Install
-
-Authenticate to GitHub Packages with `read:packages`, then install the package.
-
-Add the GitHub Packages registry to `.npmrc`:
-
-```ini
-@bearfire-dev:registry=https://npm.pkg.github.com
-```
 
 ```bash
 pnpm add @bearfire-dev/env @t3-oss/env-core zod
