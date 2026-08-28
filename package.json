@@ -1,6 +1,6 @@
 {
 	"name": "@paperkeel/env",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Bearfire environment validation with T3 Env and Zod",
 	"type": "module",
 	"license": "MIT",
