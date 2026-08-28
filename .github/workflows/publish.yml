@@ -27,7 +27,7 @@ jobs:
           node-version: 24
           cache: pnpm
           registry-url: https://npm.pkg.github.com
-          scope: "@bearfire-dev"
+          scope: "@paperkeel"
       - run: pnpm install --frozen-lockfile
       - run: pnpm check
       - if: github.event_name == 'release'
@@ -43,7 +43,7 @@ jobs:
           mkdir package-consumer
           cd package-consumer
           pnpm init
-          pnpm add --lockfile-only "@bearfire-dev/env@${PACKAGE_VERSION#v}"
+          pnpm add --lockfile-only "@paperkeel/env@${PACKAGE_VERSION#v}"
       - name: Upload consumer lockfile
         uses: actions/upload-artifact@v6
         with:

@@ -1,12 +1,12 @@
 {
-	"name": "@bearfire-dev/env",
+	"name": "@paperkeel/env",
 	"version": "0.1.0",
 	"description": "Bearfire environment validation with T3 Env and Zod",
 	"type": "module",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/bearfire-dev/env.git"
+		"url": "https://github.com/paperkeel/env.git"
 	},
 	"files": [
 		"dist"

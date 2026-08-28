@@ -1,8 +1,8 @@
-# @bearfire-dev/env
+# @paperkeel/env
 
 This internal Bearfire package adds Bearfire defaults to [T3 Env](https://github.com/t3-oss/t3-env) and [Zod 4](https://zod.dev/).
 
-It works with our [Infisical infrastructure-as-code system](https://github.com/bearfire-dev/infisical-iac). That system manages secret contracts and syncs secrets to application environments. This package validates those values at runtime and rejects Infisical placeholder values.
+It works with our [Infisical infrastructure-as-code system](https://github.com/paperkeel/infisical-iac). That system manages secret contracts and syncs secrets to application environments. This package validates those values at runtime and rejects Infisical placeholder values.
 
 This package is not intended or supported for external use.
 
@@ -17,17 +17,17 @@ Authenticate to GitHub Packages with `read:packages`, then install the package.
 Add the GitHub Packages registry to `.npmrc`:
 
 ```ini
-@bearfire-dev:registry=https://npm.pkg.github.com
+@paperkeel:registry=https://npm.pkg.github.com
 ```
 
 ```bash
-pnpm add @bearfire-dev/env @t3-oss/env-core zod
+pnpm add @paperkeel/env @t3-oss/env-core zod
 ```
 
 ## Node
 
 ```ts
-import { createBearfireEnv, secret } from "@bearfire-dev/env";
+import { createBearfireEnv, secret } from "@paperkeel/env";
 import { z } from "zod";
 
 export const env = createBearfireEnv({
@@ -44,7 +44,7 @@ export const env = createBearfireEnv({
 Workers receive variables through request bindings. Supply those bindings as `runtimeEnv` during request handling.
 
 ```ts
-import { createRequestEnv, secret } from "@bearfire-dev/env";
+import { createRequestEnv, secret } from "@paperkeel/env";
 
 const getEnv = createRequestEnv({
 	server: { SHARED_KEY: secret("SHARED_KEY") },
@@ -63,7 +63,7 @@ The helper validates one time for each Worker bindings object.
 ## Guard only
 
 ```ts
-import { isDefaultKey, throwIfDefaultKey } from "@bearfire-dev/env/guard";
+import { isDefaultKey, throwIfDefaultKey } from "@paperkeel/env/guard";
 ```
 
 The guard rejects `replace_default_key_` values and the legacy Infisical placeholder.
